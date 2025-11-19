@@ -20,7 +20,7 @@ class User(Base):
     user_id = Column(String(100), unique=True, index=True, nullable=False)
     email = Column(String(255), unique=True, nullable=True)
     name = Column(String(255), nullable=True)
-    location = Column(String(255), default="London")
+    location = Column(String(255), default="Islamabad")
     created_at = Column(DateTime, default=datetime.utcnow)
     last_active = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     is_active = Column(Boolean, default=True)

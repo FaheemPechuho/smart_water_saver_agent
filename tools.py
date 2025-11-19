@@ -82,7 +82,7 @@ class WeatherTool:
                         f"{self.api_url}/weather",
                         params={
                             "appid": self.api_key,
-                            "q": location if location != "default" else "London",
+                            "q": location if location != "default" else "Islamabad",
                             "units": "metric"
                         }
                     )
@@ -94,7 +94,7 @@ class WeatherTool:
                         f"{self.api_url}/forecast",
                         params={
                             "appid": self.api_key,
-                            "q": location if location != "default" else "London",
+                            "q": location if location != "default" else "Islamabad",
                             "units": "metric",
                             "cnt": 8  # 24 hours (8 * 3-hour intervals)
                         }

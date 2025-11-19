@@ -30,7 +30,7 @@ def seed_sample_data():
                 user_id=user_id,
                 name=f"Test User {user_id.split('_')[1]}",
                 email=f"{user_id}@example.com",
-                location="London"
+                location="Islamabad"
             )
             print(f"  ✓ Created user: {user_id}")
         
@@ -54,7 +54,7 @@ def seed_sample_data():
         
         # Add sample weather data
         print("\n🌤️  Adding weather data...")
-        locations = ["London", "New York", "Tokyo"]
+        locations = ["Islamabad", "Karachi", "Lahore"]
         for i in range(30):
             date = datetime.utcnow() - timedelta(days=i)
             for location in locations:
