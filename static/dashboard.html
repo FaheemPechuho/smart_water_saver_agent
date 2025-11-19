@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Water Saver - Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 260px;
+            background: #2d3748;
+            color: white;
+            padding: 20px;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.4em;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            margin: 8px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #cbd5e0;
+        }
+
+        .nav-item:hover {
+            background: rgba(102, 126, 234, 0.2);
+            color: white;
+        }
+
+        .nav-item.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .nav-icon {
+            font-size: 1.3em;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .user-selector {
+            margin: 20px 0;
+        }
+
+        .user-selector select {
+            padding: 10px 15px;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            min-width: 200px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .chart-title {
+            font-size: 1.3em;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .conversations-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .conversation-item {
+            padding: 15px;
+            border-left: 4px solid #667eea;
+            background: #f8f9fa;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+
+        .conversation-time {
+            font-size: 0.85em;
+            color: #999;
+            margin-bottom: 5px;
+        }
+
+        .conversation-user {
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .conversation-bot {
+            color: #555;
+            margin-top: 5px;
+        }
+
+        /* Chatbot Styles */
+        .chatbot-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 400px;
+            height: 600px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            display: none;
+            flex-direction: column;
+            z-index: 1001;
+            overflow: hidden;
+        }
+
+        .chatbot-container.active {
+            display: flex;
+        }
+
+        .chatbot-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chatbot-header h3 {
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chatbot-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+            padding: 5px;
+            transition: transform 0.2s;
+        }
+
+        .chatbot-close:hover {
+            transform: rotate(90deg);
+        }
+
+        .chatbot-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f7fafc;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-bubble {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 15px;
+            word-wrap: break-word;
+        }
+
+        .message.user .message-bubble {
+            background: #667eea;
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message.bot .message-bubble {
+            background: white;
+            color: #333;
+            border-bottom-left-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .message-time {
+            font-size: 0.75em;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        .chatbot-input-area {
+            padding: 15px;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            gap: 10px;
+        }
+
+        .chatbot-input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .chatbot-input:focus {
+            border-color: #667eea;
+        }
+
+        .chatbot-send {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .chatbot-send:hover {
+            background: #764ba2;
+        }
+
+        .chatbot-send:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 5px;
+            padding: 12px 16px;
+            background: white;
+            border-radius: 15px;
+            width: fit-content;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: #667eea;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .chatbot-fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.8em;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+            transition: transform 0.3s, box-shadow 0.3s;
+            z-index: 1000;
+        }
+
+        .chatbot-fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 7px 25px rgba(102, 126, 234, 0.6);
+        }
+
+        .chatbot-fab.hidden {
+            display: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: white;
+            font-size: 1.5em;
+        }
+
+        .error {
+            background: #ff6b6b;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .refresh-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-left: 10px;
+        }
+
+        .refresh-btn:hover {
+            background: #764ba2;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        /* Page sections */
+        .page-section {
+            display: none;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #764ba2;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>💧 Water Saver</h2>
+        </div>
+        <nav>
+            <div class="nav-item active" onclick="showPage('dashboard')" data-page="dashboard">
+                <span class="nav-icon">📊</span>
+                <span>Dashboard</span>
+            </div>
+            <div class="nav-item" onclick="showPage('conversations')" data-page="conversations">
+                <span class="nav-icon">💬</span>
+                <span>Conversations</span>
+            </div>
+            <div class="nav-item" onclick="toggleChatbot()">
+                <span class="nav-icon">🤖</span>
+                <span>Chat with AI</span>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            <!-- Dashboard Section -->
+            <div id="dashboard-section" class="page-section active">
+                <header>
+                    <h1>💧 Smart Water Saver Dashboard</h1>
+                    <p class="subtitle">Monitor your water usage and conservation efforts</p>
+                    
+                    <div class="user-selector">
+                        <label for="userSelect">Select User: </label>
+                        <select id="userSelect" onchange="loadUserData()">
+                            <option value="">Loading users...</option>
+                        </select>
+                        <button class="refresh-btn" onclick="loadAllData()">🔄 Refresh</button>
+                    </div>
+                </header>
+
+                <div id="loading" class="loading">Loading dashboard data...</div>
+                <div id="error" class="error" style="display: none;"></div>
+
+                <div id="dashboard" style="display: none;">
+                    <!-- Stats Cards -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">💧</div>
+                            <div class="stat-value" id="totalUsage">-</div>
+                            <div class="stat-label">Total Water Usage (L)</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">📊</div>
+                            <div class="stat-value" id="avgUsage">-</div>
+                            <div class="stat-label">Average Daily Usage (L)</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">💬</div>
+                            <div class="stat-value" id="totalConversations">-</div>
+                            <div class="stat-label">Total Conversations</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">✅</div>
+                            <div class="stat-value" id="recommendations">-</div>
+                            <div class="stat-label">Recommendations</div>
+                        </div>
+                    </div>
+
+                    <!-- Charts -->
+                    <div class="charts-grid">
+                        <div class="chart-card">
+                            <h3 class="chart-title">📈 Water Usage Trend (30 Days)</h3>
+                            <canvas id="usageChart"></canvas>
+                        </div>
+                        <div class="chart-card">
+                            <h3 class="chart-title">🎯 Intent Distribution</h3>
+                            <canvas id="intentChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Conversations Section -->
+            <div id="conversations-section" class="page-section">
+                <header>
+                    <h1>💬 Conversation History</h1>
+                    <p class="subtitle">View all your interactions with the AI assistant</p>
+                    
+                    <div class="user-selector">
+                        <label for="userSelectConv">Select User: </label>
+                        <select id="userSelectConv" onchange="loadConversationsPage()">
+                            <option value="">Loading users...</option>
+                        </select>
+                        <button class="refresh-btn" onclick="loadConversationsPage()">🔄 Refresh</button>
+                    </div>
+                </header>
+
+                <div class="conversations-card">
+                    <h3 class="chart-title">Recent Conversations</h3>
+                    <div id="conversationsListPage"></div>
+                </div>
+            </div>
+
+            <footer>
+                <p>© 2024 Smart Water Saver Agent | Built with ❤️ for water conservation</p>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Chatbot Floating Action Button -->
+    <button class="chatbot-fab" onclick="toggleChatbot()">💬</button>
+
+    <!-- Chatbot Container -->
+    <div class="chatbot-container" id="chatbotContainer">
+        <div class="chatbot-header">
+            <h3>
+                <span>🤖</span>
+                <span>Water Saver AI</span>
+            </h3>
+            <button class="chatbot-close" onclick="toggleChatbot()">×</button>
+        </div>
+        <div class="chatbot-messages" id="chatbotMessages">
+            <div class="message bot">
+                <div class="message-bubble">
+                    👋 Hi! I'm your Water Saver AI assistant. I can help you with:
+                    <br><br>
+                    💧 Watering recommendations<br>
+                    📊 Water usage analysis<br>
+                    💡 Water saving tips<br>
+                    <br>
+                    How can I help you today?
+                </div>
+            </div>
+        </div>
+        <div class="chatbot-input-area">
+            <input 
+                type="text" 
+                class="chatbot-input" 
+                id="chatbotInput" 
+                placeholder="Type your message..."
+                onkeypress="handleChatKeypress(event)"
+            >
+            <button class="chatbot-send" onclick="sendMessage()" id="chatbotSend">Send</button>
+        </div>
+    </div>
+
+    <script>
+        let usageChart, intentChart;
+        let currentUserId = null;
+        let chatMessages = [];
+        let isChatbotOpen = false;
+
+        // Page navigation
+        function showPage(pageName) {
+            // Remove active from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Add active to clicked nav item
+            document.querySelector(`[data-page="${pageName}"]`).classList.add('active');
+            
+            // Hide all sections
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(`${pageName}-section`).classList.add('active');
+            
+            // Load data for the page
+            if (pageName === 'conversations') {
+                syncUserSelects();
+                loadConversationsPage();
+            }
+        }
+
+        // Sync user selects across pages
+        function syncUserSelects() {
+            const mainSelect = document.getElementById('userSelect');
+            const convSelect = document.getElementById('userSelectConv');
+            
+            if (mainSelect.value && convSelect.value !== mainSelect.value) {
+                convSelect.innerHTML = mainSelect.innerHTML;
+                convSelect.value = mainSelect.value;
+            }
+        }
+
+        // Chatbot functions
+        function toggleChatbot() {
+            const chatbot = document.getElementById('chatbotContainer');
+            const fab = document.querySelector('.chatbot-fab');
+            
+            isChatbotOpen = !isChatbotOpen;
+            
+            if (isChatbotOpen) {
+                chatbot.classList.add('active');
+                fab.classList.add('hidden');
+                document.getElementById('chatbotInput').focus();
+            } else {
+                chatbot.classList.remove('active');
+                fab.classList.remove('hidden');
+            }
+        }
+
+        function handleChatKeypress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatbotInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Add user message to chat
+            addMessage('user', message);
+            input.value = '';
+            
+            // Disable input while processing
+            const sendBtn = document.getElementById('chatbotSend');
+            input.disabled = true;
+            sendBtn.disabled = true;
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            try {
+                // Get current user ID or use default
+                const userId = currentUserId || 'guest_' + Date.now();
+                
+                // Send message to backend
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        messages: chatMessages.concat([{
+                            role: 'user',
+                            content: message
+                        }]),
+                        user_id: userId
+                    })
+                });
+                
+                const data = await response.json();
+                
+                // Remove typing indicator
+                removeTypingIndicator();
+                
+                if (data.status === 'success') {
+                    // Add bot response
+                    addMessage('bot', data.data.content);
+                    
+                    // Update chat history
+                    chatMessages.push({
+                        role: 'user',
+                        content: message
+                    });
+                    chatMessages.push({
+                        role: 'assistant',
+                        content: data.data.content
+                    });
+                    
+                    // Keep only last 10 messages to avoid context overflow
+                    if (chatMessages.length > 20) {
+                        chatMessages = chatMessages.slice(-20);
+                    }
+                } else {
+                    addMessage('bot', '❌ Sorry, I encountered an error: ' + (data.error_message || 'Unknown error'));
+                }
+            } catch (error) {
+                removeTypingIndicator();
+                addMessage('bot', '❌ Sorry, I couldn\'t process your request. Please try again.');
+                console.error('Chat error:', error);
+            } finally {
+                input.disabled = false;
+                sendBtn.disabled = false;
+                input.focus();
+            }
+        }
+
+        function addMessage(type, content) {
+            const messagesContainer = document.getElementById('chatbotMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+            
+            messageDiv.innerHTML = `
+                <div class="message-bubble">
+                    ${content}
+                    <div class="message-time">${timeString}</div>
+                </div>
+            `;
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            const messagesContainer = document.getElementById('chatbotMessages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message bot';
+            typingDiv.id = 'typing-indicator';
+            typingDiv.innerHTML = `
+                <div class="typing-indicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            `;
+            messagesContainer.appendChild(typingDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const typingIndicator = document.getElementById('typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+        // Dashboard functions
+        async function loadUsers() {
+            try {
+                const response = await fetch('/api/dashboard/users');
+                const data = await response.json();
+                
+                const mainSelect = document.getElementById('userSelect');
+                const convSelect = document.getElementById('userSelectConv');
+                
+                const optionsHTML = '<option value="">-- Select a user --</option>' + 
+                    data.users.map(user => 
+                        `<option value="${user.user_id}">${user.name || user.user_id} (${user.location})</option>`
+                    ).join('');
+                
+                mainSelect.innerHTML = optionsHTML;
+                convSelect.innerHTML = optionsHTML;
+
+                // Auto-select first user if available
+                if (data.users.length > 0) {
+                    mainSelect.value = data.users[0].user_id;
+                    convSelect.value = data.users[0].user_id;
+                    loadUserData();
+                }
+            } catch (error) {
+                showError('Failed to load users: ' + error.message);
+            }
+        }
+
+        async function loadUserData() {
+            const userId = document.getElementById('userSelect').value;
+            if (!userId) return;
+
+            currentUserId = userId;
+            showLoading();
+
+            try {
+                await Promise.all([
+                    loadUserStats(userId),
+                    loadUserUsage(userId),
+                    loadIntentDistribution()
+                ]);
+
+                hideLoading();
+                document.getElementById('dashboard').style.display = 'block';
+            } catch (error) {
+                showError('Failed to load dashboard data: ' + error.message);
+            }
+        }
+
+        async function loadUserStats(userId) {
+            const response = await fetch(`/api/dashboard/user/${userId}/stats?days=30`);
+            const data = await response.json();
+
+            document.getElementById('totalUsage').textContent = data.total_water_usage.toFixed(1);
+            document.getElementById('avgUsage').textContent = data.average_daily_usage.toFixed(1);
+            document.getElementById('totalConversations').textContent = data.total_conversations;
+            document.getElementById('recommendations').textContent = data.recommendations_count;
+        }
+
+        async function loadUserUsage(userId) {
+            const response = await fetch(`/api/dashboard/user/${userId}/usage?days=30`);
+            const data = await response.json();
+
+            // Prepare chart data
+            const dates = data.records.map(r => new Date(r.date).toLocaleDateString()).reverse();
+            const usage = data.records.map(r => r.usage_liters).reverse();
+
+            // Destroy existing chart if it exists
+            if (usageChart) {
+                usageChart.destroy();
+            }
+
+            // Create new chart
+            const ctx = document.getElementById('usageChart').getContext('2d');
+            usageChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: 'Water Usage (Liters)',
+                        data: usage,
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'bottom'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Liters'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        async function loadIntentDistribution() {
+            const response = await fetch('/api/dashboard/analytics/intent-distribution?days=30');
+            const data = await response.json();
+
+            // Prepare chart data
+            const intents = data.intents.map(i => i.intent);
+            const counts = data.intents.map(i => i.count);
+
+            // Destroy existing chart if it exists
+            if (intentChart) {
+                intentChart.destroy();
+            }
+
+            // Create new chart
+            const ctx = document.getElementById('intentChart').getContext('2d');
+            intentChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: intents,
+                    datasets: [{
+                        data: counts,
+                        backgroundColor: [
+                            '#667eea',
+                            '#764ba2',
+                            '#f093fb',
+                            '#4facfe'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        async function loadConversationsPage() {
+            const userId = document.getElementById('userSelectConv').value;
+            if (!userId) return;
+
+            const response = await fetch(`/api/dashboard/user/${userId}/conversations?limit=50`);
+            const data = await response.json();
+
+            const container = document.getElementById('conversationsListPage');
+            container.innerHTML = '';
+
+            if (data.conversations.length === 0) {
+                container.innerHTML = '<p style="text-align:center;color:#999;padding:40px;">No conversations yet. Start chatting with the AI assistant!</p>';
+                return;
+            }
+
+            data.conversations.forEach(conv => {
+                const item = document.createElement('div');
+                item.className = 'conversation-item';
+                item.innerHTML = `
+                    <div class="conversation-time">${new Date(conv.timestamp).toLocaleString()} | Intent: ${conv.intent} | ${conv.processing_time_ms}ms</div>
+                    <div class="conversation-user"><strong>User:</strong> ${conv.user_message}</div>
+                    <div class="conversation-bot"><strong>Agent:</strong> ${conv.bot_response}</div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('error').style.display = 'none';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        function showError(message) {
+            document.getElementById('error').textContent = message;
+            document.getElementById('error').style.display = 'block';
+            hideLoading();
+        }
+
+        function loadAllData() {
+            loadUserData();
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUsers();
+        });
+    </script>
+</body>
+</html>

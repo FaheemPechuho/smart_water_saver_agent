@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  agent:
+    build: .
+    container_name: smart_water_saver_agent
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # Optional: PostgreSQL database for Long-Term Memory
+  # Uncomment if you want to run a local database
+  # db:
+  #   image: postgres:15-alpine
+  #   container_name: water_saver_db
+  #   environment:
+  #     - POSTGRES_DB=water_saver_db
+  #     - POSTGRES_USER=postgres
+  #     - POSTGRES_PASSWORD=your_password_here
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   restart: unless-stopped
+
+# volumes:
+#   postgres_data:
+

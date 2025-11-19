@@ -1,0 +1,41 @@
+============================================
+QUICK SETUP - Google Gemini (FREE!)
+============================================
+
+✅ STEP 1: Get FREE Gemini API Key (2 minutes)
+   1. Visit: https://aistudio.google.com/app/apikey
+   2. Sign in with your Google account
+   3. Click "Create API Key"
+   4. Copy the key (starts with AIza...)
+
+✅ STEP 2: Create .env File
+   Create a file named ".env" in your project folder with:
+
+   LLM_PROVIDER=gemini
+   GOOGLE_API_KEY=AIzaSy...paste_your_key_here
+
+✅ STEP 3: Install Dependencies
+   pip install -r requirements.txt
+
+✅ STEP 4: Run Your Agent
+   python main.py
+
+   You should see: "LLM Provider: gemini" ✓
+
+✅ STEP 5: Test It
+   python example_usage.py
+
+============================================
+THAT'S IT! NO MORE OPENAI QUOTA ERRORS!
+============================================
+
+Why Gemini?
+• Completely FREE (no credit card needed)
+• 1500 requests/day free tier
+• Fast & powerful (Gemini 2.0 Flash)
+• Works perfectly for this project
+
+For detailed instructions, see: GEMINI_SETUP.md
+
+============================================
+

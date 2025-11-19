@@ -1,0 +1,50 @@
+============================================
+QUICK FIX: Gemini Quota Error
+============================================
+
+PROBLEM:
+You're using gemini-2.0-flash-exp (experimental model)
+which has VERY restrictive quotas (limit: 0!)
+
+SOLUTION:
+Switch to the stable model: gemini-1.5-flash
+
+============================================
+STEPS TO FIX:
+============================================
+
+1. Open your .env file
+
+2. Add or update this line:
+   GEMINI_MODEL=gemini-1.5-flash-latest
+
+3. Your complete .env should look like:
+
+   LLM_PROVIDER=gemini
+   GOOGLE_API_KEY=your_key_here
+   GEMINI_MODEL=gemini-1.5-flash-latest
+   WEATHER_PROVIDER=openweather
+   WEATHER_API_KEY=your_weather_key_here
+
+4. Restart the agent:
+   Ctrl+C (stop current)
+   python main.py (restart)
+
+5. Test again - it should work!
+
+============================================
+WHY THIS WORKS:
+============================================
+
+gemini-2.0-flash-exp:      0-2 requests/min  ❌
+gemini-1.5-flash-latest:   15 requests/min   ✅
+                           1,500/day          ✅
+
+Stable model = Better free tier!
+
+============================================
+
+For detailed help, see: GEMINI_QUOTA_FIX.md
+
+============================================
+

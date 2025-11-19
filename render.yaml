@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: water-saver-agent
+    runtime: python
+    region: oregon
+    plan: free
+    buildCommand: pip install -r requirements.txt && python init_render_db.py
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: LLM_PROVIDER
+        value: gemini
+      - key: GOOGLE_API_KEY
+        sync: false
+      - key: WEATHER_API_KEY
+        sync: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: water-saver-db
+          property: connectionString
+
+databases:
+  - name: water-saver-db
+    databaseName: water_saver
+    user: water_saver_user
+    plan: free
+
