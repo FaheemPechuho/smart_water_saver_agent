@@ -118,6 +118,32 @@ async def dashboard():
     return FileResponse("static/dashboard.html")
 
 
+@app.post("/admin/update-locations")
+async def update_locations(db: Session = Depends(get_db)):
+    """Admin endpoint to update user locations from London to Islamabad."""
+    try:
+        from sqlalchemy import update
+        from database import User
+        
+        result = db.execute(
+            update(User)
+            .where(User.location == "London")
+            .values(location="Islamabad")
+        )
+        db.commit()
+        
+        return {
+            "status": "success",
+            "message": f"Updated {result.rowcount} users to Islamabad",
+            "updated_count": result.rowcount
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "message": str(e)
+        }
+
+
 @app.get("/health", response_model=AgentResponse)
 async def health_check():
     """
