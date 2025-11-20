@@ -4,6 +4,13 @@ Defines the API contract between Supervisor and Worker agent.
 """
 from typing import Optional, List, Any, Dict
 from pydantic import BaseModel, Field
+from enum import Enum
+
+
+class Status(str, Enum):
+    """Status enum for agent responses."""
+    SUCCESS = "success"
+    ERROR = "error"
 
 
 class Message(BaseModel):
@@ -47,10 +54,10 @@ class AgentResponse(BaseModel):
     Standardized format for communication with the Supervisor.
     """
     agent_name: str = Field(
-        default="SmartWaterSaverAgent",
+        default="smart-water-saver-agent",
         description="Name of this agent"
     )
-    status: str = Field(
+    status: Status = Field(
         ..., 
         description="Status of the request: 'success' or 'error'"
     )
@@ -66,10 +73,10 @@ class AgentResponse(BaseModel):
     class Config:
         json_schema_extra = {
             "example": {
-                "agent_name": "SmartWaterSaverAgent",
+                "agent_name": "smart-water-saver-agent",
                 "status": "success",
                 "data": {
-                    "content": "No, I would not recommend watering today. The forecast shows 5mm of rain expected around 4:00 PM."
+                    "message": "No, I would not recommend watering today. The forecast shows 5mm of rain expected around 4:00 PM."
                 },
                 "error_message": None
             }

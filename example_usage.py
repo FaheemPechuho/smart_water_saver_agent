@@ -43,7 +43,7 @@ async def test_agent():
             ],
             "user_id": "example_user_123"
         }
-        response = await client.post(f"{base_url}/chat", json=watering_request)
+        response = await client.post(f"{base_url}/smart-water-saver-agent", json=watering_request)
         print(f"Request: {watering_request['messages'][0]['content']}")
         print(f"Response: {json.dumps(response.json(), indent=2)}")
         print()
@@ -60,7 +60,7 @@ async def test_agent():
             ],
             "user_id": "example_user_123"
         }
-        response = await client.post(f"{base_url}/chat", json=usage_request)
+        response = await client.post(f"{base_url}/smart-water-saver-agent", json=usage_request)
         print(f"Request: {usage_request['messages'][0]['content']}")
         print(f"Response: {json.dumps(response.json(), indent=2)}")
         print()
@@ -77,7 +77,7 @@ async def test_agent():
             ],
             "user_id": "example_user_123"
         }
-        response = await client.post(f"{base_url}/chat", json=tip_request)
+        response = await client.post(f"{base_url}/smart-water-saver-agent", json=tip_request)
         print(f"Request: {tip_request['messages'][0]['content']}")
         print(f"Response: {json.dumps(response.json(), indent=2)}")
         print()
@@ -102,7 +102,7 @@ async def test_agent():
             ],
             "user_id": "example_user_123"
         }
-        response = await client.post(f"{base_url}/chat", json=conversation_request)
+        response = await client.post(f"{base_url}/smart-water-saver-agent", json=conversation_request)
         print(f"Conversation:")
         for msg in conversation_request['messages']:
             print(f"  {msg['role']}: {msg['content']}")
@@ -121,7 +121,7 @@ async def test_agent():
             ],
             "user_id": "example_user_123"
         }
-        response = await client.post(f"{base_url}/chat", json=unknown_request)
+        response = await client.post(f"{base_url}/smart-water-saver-agent", json=unknown_request)
         print(f"Request: {unknown_request['messages'][0]['content']}")
         print(f"Response: {json.dumps(response.json(), indent=2)}")
         print()

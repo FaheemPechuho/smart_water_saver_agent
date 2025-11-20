@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     """Application settings loaded from environment variables."""
     
     # API Configuration
-    agent_name: str = "SmartWaterSaverAgent"
+    agent_name: str = "smart-water-saver-agent"
     api_host: str = "0.0.0.0"
     api_port: int = 8000
     

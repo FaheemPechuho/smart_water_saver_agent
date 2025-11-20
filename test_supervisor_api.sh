@@ -98,7 +98,7 @@ echo "════════════════════════�
 echo "TEST 3: Chat - Watering Advice"
 echo "═══════════════════════════════════════════════════════"
 BODY='{"messages":[{"role":"user","content":"Should I water my garden today?"}],"user_id":"test_user_001"}'
-if test_endpoint "Watering Advice" "$BASE_URL/chat" "POST" "$BODY"; then
+if test_endpoint "Watering Advice" "$BASE_URL/smart-water-saver-agent" "POST" "$BODY"; then
     ((TESTS_PASSED++))
 else
     ((TESTS_FAILED++))
@@ -109,7 +109,7 @@ echo "════════════════════════�
 echo "TEST 4: Chat - Usage Query"
 echo "═══════════════════════════════════════════════════════"
 BODY='{"messages":[{"role":"user","content":"How much water did I use this week?"}],"user_id":"test_user_001"}'
-if test_endpoint "Usage Query" "$BASE_URL/chat" "POST" "$BODY"; then
+if test_endpoint "Usage Query" "$BASE_URL/smart-water-saver-agent" "POST" "$BODY"; then
     ((TESTS_PASSED++))
 else
     ((TESTS_FAILED++))
@@ -120,7 +120,7 @@ echo "════════════════════════�
 echo "TEST 5: Chat - Water Saving Tip"
 echo "═══════════════════════════════════════════════════════"
 BODY='{"messages":[{"role":"user","content":"Give me a water saving tip"}],"user_id":"test_user_001"}'
-if test_endpoint "Water Saving Tip" "$BASE_URL/chat" "POST" "$BODY"; then
+if test_endpoint "Water Saving Tip" "$BASE_URL/smart-water-saver-agent" "POST" "$BODY"; then
     ((TESTS_PASSED++))
 else
     ((TESTS_FAILED++))
@@ -131,7 +131,7 @@ echo "════════════════════════�
 echo "TEST 6: Chat - Anonymous Request (No User ID)"
 echo "═══════════════════════════════════════════════════════"
 BODY='{"messages":[{"role":"user","content":"What are the best times to water plants?"}]}'
-if test_endpoint "Anonymous Chat" "$BASE_URL/chat" "POST" "$BODY"; then
+if test_endpoint "Anonymous Chat" "$BASE_URL/smart-water-saver-agent" "POST" "$BODY"; then
     ((TESTS_PASSED++))
 else
     ((TESTS_FAILED++))
@@ -142,7 +142,7 @@ echo "════════════════════════�
 echo "TEST 7: Chat - Multi-turn Conversation"
 echo "═══════════════════════════════════════════════════════"
 BODY='{"messages":[{"role":"user","content":"What is the weather like?"},{"role":"assistant","content":"The weather is partly cloudy."},{"role":"user","content":"Should I water based on that?"}],"user_id":"test_user_001"}'
-if test_endpoint "Multi-turn Conversation" "$BASE_URL/chat" "POST" "$BODY"; then
+if test_endpoint "Multi-turn Conversation" "$BASE_URL/smart-water-saver-agent" "POST" "$BODY"; then
     ((TESTS_PASSED++))
 else
     ((TESTS_FAILED++))

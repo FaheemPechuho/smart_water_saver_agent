@@ -100,7 +100,7 @@ $body = @{
     user_id = "test_user_001"
 } | ConvertTo-Json -Depth 10 -Compress
 
-if (Test-Endpoint -Name "Watering Advice" -Url "$baseUrl/chat" -Method "POST" -Body $body) {
+if (Test-Endpoint -Name "Watering Advice" -Url "$baseUrl/smart-water-saver-agent" -Method "POST" -Body $body) {
     $testsPassed++
 } else {
     $testsFailed++
@@ -120,7 +120,7 @@ $body = @{
     user_id = "test_user_001"
 } | ConvertTo-Json -Depth 10 -Compress
 
-if (Test-Endpoint -Name "Usage Query" -Url "$baseUrl/chat" -Method "POST" -Body $body) {
+if (Test-Endpoint -Name "Usage Query" -Url "$baseUrl/smart-water-saver-agent" -Method "POST" -Body $body) {
     $testsPassed++
 } else {
     $testsFailed++
@@ -140,7 +140,7 @@ $body = @{
     user_id = "test_user_001"
 } | ConvertTo-Json -Depth 10 -Compress
 
-if (Test-Endpoint -Name "Water Saving Tip" -Url "$baseUrl/chat" -Method "POST" -Body $body) {
+if (Test-Endpoint -Name "Water Saving Tip" -Url "$baseUrl/smart-water-saver-agent" -Method "POST" -Body $body) {
     $testsPassed++
 } else {
     $testsFailed++
@@ -159,7 +159,7 @@ $body = @{
     )
 } | ConvertTo-Json -Depth 10 -Compress
 
-if (Test-Endpoint -Name "Anonymous Chat" -Url "$baseUrl/chat" -Method "POST" -Body $body) {
+if (Test-Endpoint -Name "Anonymous Chat" -Url "$baseUrl/smart-water-saver-agent" -Method "POST" -Body $body) {
     $testsPassed++
 } else {
     $testsFailed++
@@ -187,7 +187,7 @@ $body = @{
     user_id = "test_user_001"
 } | ConvertTo-Json -Depth 10 -Compress
 
-if (Test-Endpoint -Name "Multi-turn Conversation" -Url "$baseUrl/chat" -Method "POST" -Body $body) {
+if (Test-Endpoint -Name "Multi-turn Conversation" -Url "$baseUrl/smart-water-saver-agent" -Method "POST" -Body $body) {
     $testsPassed++
 } else {
     $testsFailed++

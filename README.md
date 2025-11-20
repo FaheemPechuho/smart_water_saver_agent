@@ -32,7 +32,7 @@ START → Router (Intent Classification)
 
 ### Components
 
-- **`main.py`**: FastAPI application with `/health` and `/chat` endpoints
+- **`main.py`**: FastAPI application with agent endpoints
 - **`models.py`**: Pydantic models for API contract (AgentRequest, AgentResponse)
 - **`agent.py`**: LangGraph state machine implementation
 - **`tools.py`**: Tool implementations (Weather, Usage, Tips)
@@ -146,9 +146,9 @@ Health check endpoint for monitoring.
 }
 ```
 
-### POST `/chat`
+### POST `/smart-water-saver-agent`
 
-Main conversational endpoint.
+Main agent endpoint.
 
 **Request:**
 ```json
@@ -166,10 +166,10 @@ Main conversational endpoint.
 **Response:**
 ```json
 {
-  "agent_name": "SmartWaterSaverAgent",
+  "agent_name": "smart-water-saver-agent",
   "status": "success",
   "data": {
-    "content": "No, I would not recommend watering today. The forecast shows 5mm of rain expected around 4:00 PM."
+    "message": "No, I would not recommend watering today. The forecast shows 5mm of rain expected around 4:00 PM."
   },
   "error_message": null
 }
