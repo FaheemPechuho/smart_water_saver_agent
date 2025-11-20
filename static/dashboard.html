@@ -574,7 +574,7 @@
             </div>
 
             <footer>
-                <p>© 2024 Smart Water Saver Agent | Built with ❤️ for water conservation</p>
+                <p>Built with ❤️ for water conservation</p>
             </footer>
         </div>
     </div>
@@ -704,7 +704,7 @@
                 const userId = currentUserId || 'guest_' + Date.now();
                 
                 // Send message to backend
-                const response = await fetch('/chat', {
+                const response = await fetch('/smart-water-saver-agent', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -725,7 +725,7 @@
                 
                 if (data.status === 'success') {
                     // Add bot response
-                    addMessage('bot', data.data.content);
+                    addMessage('bot', data.data.message);
                     
                     // Update chat history
                     chatMessages.push({
@@ -734,7 +734,7 @@
                     });
                     chatMessages.push({
                         role: 'assistant',
-                        content: data.data.content
+                        content: data.data.message
                     });
                     
                     // Keep only last 10 messages to avoid context overflow

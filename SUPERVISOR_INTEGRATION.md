@@ -10,7 +10,7 @@ This agent **fully conforms** to the Supervisor-Worker API specification.
 
 ### Base Information
 ```
-Agent Name: SmartWaterSaverAgent
+Agent Name: smart-water-saver-agent
 Version: 1.0.0
 Status: Production Ready ✅
 ```
@@ -19,8 +19,8 @@ Status: Production Ready ✅
 
 | Endpoint | Method | Purpose |
 |----------|--------|---------|
-| `/health` | GET | Health monitoring |
-| `/chat` | POST | Main conversation endpoint |
+| `/smart-water-saver-agent/health` | GET | Health monitoring |
+| `/smart-water-saver-agent` | POST | Main agent endpoint |
 | `/` | GET | API information |
 | `/docs` | GET | Interactive documentation |
 
@@ -52,20 +52,20 @@ Status: Production Ready ✅
 
 ```json
 {
-  "agent_name": "SmartWaterSaverAgent",
+  "agent_name": "smart-water-saver-agent",
   "status": "success",
   "data": {
-    "content": "No, I would not recommend watering today. Rain expected."
+    "message": "No, I would not recommend watering today. Rain expected."
   },
   "error_message": null
 }
 ```
 
 **Fields:**
-- `agent_name` (string): Always "SmartWaterSaverAgent"
+- `agent_name` (string): Always "smart-water-saver-agent"
 - `status` (string): "success" or "error"
 - `data` (object | null): Response data when successful
-  - `content` (string): The agent's response text
+  - `message` (string): The agent's response text
 - `error_message` (string | null): Error description if status is "error"
 
 ---
@@ -75,20 +75,20 @@ Status: Production Ready ✅
 ### Health Check
 ```bash
 # PowerShell
-Invoke-WebRequest http://localhost:8000/health
+Invoke-WebRequest http://localhost:8000/smart-water-saver-agent/health
 
 # Bash
-curl http://localhost:8000/health
+curl http://localhost:8000/smart-water-saver-agent/health
 ```
 
-### Chat Request
+### Agent Request
 ```bash
 # PowerShell
 $body='{"messages":[{"role":"user","content":"Should I water today?"}]}'
-Invoke-WebRequest -Uri http://localhost:8000/chat -Method POST -ContentType "application/json" -Body $body
+Invoke-WebRequest -Uri http://localhost:8000/smart-water-saver-agent -Method POST -ContentType "application/json" -Body $body
 
 # Bash
-curl -X POST http://localhost:8000/chat \
+curl -X POST http://localhost:8000/smart-water-saver-agent \
   -H "Content-Type: application/json" \
   -d '{"messages":[{"role":"user","content":"Should I water today?"}]}'
 ```
@@ -195,24 +195,24 @@ https://api.yourdomain.com/water-saver
 
 1. **Test Health:**
    ```bash
-   curl http://YOUR_URL/health
+   curl http://YOUR_URL/smart-water-saver-agent/health
    ```
 
-2. **Test Chat:**
+2. **Test Agent:**
    ```bash
-   curl -X POST http://YOUR_URL/chat \
+   curl -X POST http://YOUR_URL/smart-water-saver-agent \
      -H "Content-Type: application/json" \
      -d '{"messages":[{"role":"user","content":"Hello"}]}'
    ```
 
 3. **Verify Response Format:**
-   - Check `agent_name` = "SmartWaterSaverAgent"
+   - Check `agent_name` = "smart-water-saver-agent"
    - Check `status` = "success"
-   - Check `data.content` contains response
+   - Check `data.message` contains response
 
 4. **Integrate:**
-   - Use `/health` for monitoring
-   - Use `/chat` for user interactions
+   - Use `/smart-water-saver-agent/health` for monitoring
+   - Use `/smart-water-saver-agent` for user interactions
    - Handle both success and error statuses
 
 ---

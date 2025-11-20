@@ -9,7 +9,7 @@ from contextlib import asynccontextmanager
 import logging
 import sys
 
-from models import AgentRequest, AgentResponse
+from models import AgentRequest, AgentResponse, Status
 from agent import process_chat
 from config import settings
 from database import get_db, create_or_update_user, log_conversation, db_manager
@@ -82,7 +82,7 @@ async def global_exception_handler(request: Request, exc: Exception):
     
     error_response = AgentResponse(
         agent_name=settings.agent_name,
-        status="error",
+        status=Status.ERROR,
         data=None,
         error_message=f"Internal server error: {str(exc)}"
     )
@@ -98,12 +98,12 @@ async def root():
     """Root endpoint - redirects to health check."""
     return AgentResponse(
         agent_name=settings.agent_name,
-        status="success",
+        status=Status.SUCCESS,
         data={
             "message": "Smart Water Saver Agent is running",
             "endpoints": {
-                "health": "/health",
-                "chat": "/chat",
+                "health": "/smart-water-saver-agent/health",
+                "agent": "/smart-water-saver-agent",
                 "dashboard": "/dashboard",
                 "api_docs": "/docs"
             }
@@ -144,34 +144,25 @@ async def update_locations(db: Session = Depends(get_db)):
         }
 
 
-@app.get("/health", response_model=AgentResponse)
+@app.get("/smart-water-saver-agent/health")
 async def health_check():
     """
     Health check endpoint for the Supervisor to monitor agent status.
     
     Returns:
-        AgentResponse with status and operational message
+        Simple JSON response (not using AgentResponse model for health check)
     """
     logger.info("Health check requested")
     
-    return AgentResponse(
-        agent_name=settings.agent_name,
-        status="success",
-        data={
-            "message": "Agent is operational",
-            "version": "1.0.0",
-            "capabilities": [
-                "watering_advice",
-                "usage_query",
-                "general_tip"
-            ]
-        },
-        error_message=None
-    )
+    return {
+        "status": "ok",
+        "agent_name": settings.agent_name,
+        "ready": True
+    }
 
 
-@app.post("/chat", response_model=AgentResponse)
-async def chat(request: AgentRequest, db: Session = Depends(get_db)):
+@app.post("/smart-water-saver-agent", response_model=AgentResponse)
+async def smart_water_saver_agent(request: AgentRequest, db: Session = Depends(get_db)):
     """
     Main chat endpoint for processing user requests via LangGraph.
     
@@ -236,9 +227,9 @@ async def chat(request: AgentRequest, db: Session = Depends(get_db)):
         
         return AgentResponse(
             agent_name=settings.agent_name,
-            status="success",
+            status=Status.SUCCESS,
             data={
-                "content": response_content
+                "message": response_content
             },
             error_message=None
         )
@@ -250,11 +241,11 @@ async def chat(request: AgentRequest, db: Session = Depends(get_db)):
         
     except Exception as e:
         # Log and return error response
-        logger.error(f"Error processing chat request: {e}", exc_info=True)
+        logger.error(f"Error processing agent request: {e}", exc_info=True)
         
         return AgentResponse(
             agent_name=settings.agent_name,
-            status="error",
+            status=Status.ERROR,
             data=None,
             error_message=f"Failed to process request: {str(e)}"
         )
